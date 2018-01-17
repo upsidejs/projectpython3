@@ -748,6 +748,36 @@ while True:
                                 van = "「Bot running」\n"+waktu(eltime)
                                 client.sendText(receiver, van)
 #============================================================#RUNTIMEFINISHED#=========================================================#
+#-----------------------------------------------
+                            elif "Up " in msg.text:
+                                   txt = msg.text.split(" ")
+                                   jmlh = int(txt[2])
+                                   teks = msg.text.replace("Up "+str(txt[1])+" "+str(jmlh)+ " ","")
+                                   tulisan = jmlh * (teks+"\n")
+                                   if txt[1] == "on":
+                                    if jmlh <= 9999:
+                                         for x in range(jmlh):
+                                               client.sendText(msg.to,teks)
+                                    elif txt[1] == "off":
+                                         if jmlh <= 9999:
+                                               client.sendText(msg.to, tulisan)
+                                         else:
+                                               client.sendText(msg.to, "Out of range! ")
+#-------------------------------------------------------------------#
+#----------------Commandtambahan----------------------#
+                            elif msg.text in ["Membergroup"]:
+                               gid = client.getGroupIdsJoined()
+                               h = ""
+                               for i in gid:
+                                h += "[>] %s  \n" % (client.getGroup(i).name + " | 「Members」: " + str(len (client.getGroup(i).members)))
+                               client.sendText(msg.to, "「Group List」\n"+ h +"「Total Group」 : " +str(len(gid)))
+
+                            elif msg.text in ["Listgroup"]:
+                               gid = client.getGroupIdsJoined()
+                               h = ""
+                               for i in gid:
+                                h += "[>] %s  \n" % (client.getGroup(i).name + " | 「Members 」: " + str(len (client.getGroup(i).members)))
+                               client.sendText(msg.to, "☆「Group List」☆\n"+ h +"「Total Group」 : " +str(len(gid)))
 #============================================================#Mystatus start#=========================================================#
                             elif msg.text in ["Mystatus"]:
                                 md = ""
