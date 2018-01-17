@@ -7,7 +7,7 @@ from gtts import gTTS
 from googletrans import Translator
 
 #client = LineClient()
-client = LineClient(id='pinksweetblack@gmail.com', passwd='asukabeh69')
+client = LineClient(id='EMAILMU', passwd='kalo ingin login qr KOSONGIN JADI = passwd='')')
 #client = LineClient(authToken='AUTHTOKEN')
 client.log("Auth Token : " + str(client.authToken))
 
@@ -18,6 +18,7 @@ client.log("Channel Access Token : " + str(channel.channelAccessToken))
 #client2 = LineClient(id='yogafermozza@gmail.com', passwd='smokers69')
 #client = LineClient(authToken='AUTHTOKEN')
 #client2.log("Auth Token : " + str(client.authToken))
+#==============================^JIKA KALIAN INGIN LOGIN 2 BOT. HAPUS PAGAR!==========================#
 
 #channel = LineChannel(client)
 #client.log("Channel Access Token : " + str(channel.channelAccessToken))
