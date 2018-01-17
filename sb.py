@@ -1,0 +1,790 @@
+# -*- coding: utf-8 -*-
+import linepy
+from linepy import *
+from bs4 import BeautifulSoup
+import json, time, random, tempfile, os, sys, codecs, threading, glob, urllib, urllib3,re ,ast , subprocess, requests
+from gtts import gTTS
+from googletrans import Translator
+
+#client = LineClient()
+client = LineClient(id='pinksweetblack@gmail.com', passwd='asukabeh69')
+#client = LineClient(authToken='AUTHTOKEN')
+client.log("Auth Token : " + str(client.authToken))
+
+channel = LineChannel(client)
+client.log("Channel Access Token : " + str(channel.channelAccessToken))
+
+#client = LineClient()
+#client2 = LineClient(id='yogafermozza@gmail.com', passwd='smokers69')
+#client = LineClient(authToken='AUTHTOKEN')
+#client2.log("Auth Token : " + str(client.authToken))
+
+#channel = LineChannel(client)
+#client.log("Channel Access Token : " + str(channel.channelAccessToken))
+
+clientProfile = client.getProfile()
+clientSettings = client.getSettings()
+poll = LinePoll(client)
+clientMID = client.profile.mid
+
+
+
+contact = client.getProfile()
+backup = client.getProfile()
+backup.displayName = contact.displayName
+backup.statusMessage = contact.statusMessage
+backup.pictureStatus = contact.pictureStatus
+#==============================================================================#
+settings = {
+    "autoAdd":False,
+    "autoJoin":True,
+}
+read = {
+    "readPoint":{},
+    "readMember":{},
+    "readTime":{},
+    "ROM":{},
+}
+mode='self'
+cctv={
+    "cyduk":{},
+    "point":{},
+    "sidermem":{}
+}
+myProfile = {
+	"displayName": "",
+	"statusMessage": "",
+	"pictureStatus": ""
+}
+myProfile2 = {
+	"displayName2": "",
+	"statusMessage2": "",
+	"pictureStatus2": ""
+}
+wait2 = {
+    'setTime':{},
+}
+
+setTime = {}
+setTime = wait2['setTime']
+mulai = time.time()
+
+
+myProfile["displayName"] = clientProfile.displayName
+myProfile["statusMessage"] = clientProfile.statusMessage
+myProfile["pictureStatus"] = clientProfile.pictureStatus
+
+#==============================================================================#
+def restart_program():
+    python = sys.executable
+    os.execl(python, python, * sys.argv)
+
+def RECEIVE_MESSAGE(op):
+    '''
+        This is sample for implement BOT in LINE group
+        Invite your BOT to group, then BOT will auto accept your invitation
+        Command availabe :
+        > hi
+        > /author
+    '''
+    msg = op.message
+    
+    text = msg.text
+    msg_id = msg.id
+    receiver = msg.to
+    sender = msg._from
+
+def mention(to, nama):
+    aa = ""
+    bb = ""
+    strt = int(0)
+    akh = int(0)
+    nm = nama
+    myid = client.getProfile().mid
+    if myid in nm:    
+        nm.remove(myid)
+    for mm in nm:
+        akh = akh + 6
+        aa += """{"S":"""+json.dumps(str(strt))+""","E":"""+json.dumps(str(akh))+""","M":"""+json.dumps(mm)+"},"""
+        strt = strt + 7
+        akh = akh + 1
+        bb += "@nrik \n"
+        aa = (aa[:int(len(aa)-1)])
+        text = bb
+    try:
+        client.sendMessage(to, text, contentMetadata={'MENTION':'{"MENTIONEES":['+aa+']}'}, contentType=0)
+    except Exception as error:
+        print(error)
+
+def waktu(secs):
+    mins, secs = divmod(secs,60)
+    hours, mins = divmod(mins,60)
+    return '「 %02d нσυяѕ %02d мιиυтє %02d ѕє¢σи∂」' % (hours, mins, secs)
+
+def NOTIFIED_INVITE_INTO_GROUP(op):
+    try:
+        group_id=op.param1
+        # Accept group invitation
+        client.acceptGroupInvitation(group_id)
+    except Exception as e:
+        client.log("[NOTIFIED_INVITE_INTO_GROUP] ERROR : " + str(e))
+
+# Add function to poll
+poll.addOpInterruptWithDict({
+    OpType.RECEIVE_MESSAGE: RECEIVE_MESSAGE,
+    OpType.NOTIFIED_INVITE_INTO_GROUP: NOTIFIED_INVITE_INTO_GROUP
+})
+
+#===================================================================================#
+
+while True:
+    try:
+        ops=poll.singleTrace(count=50)
+        if ops != None:
+          for op in ops:
+
+#=========================================================================================================================================#
+            #if op.type in OpType._VALUES_TO_NAMES:
+            #    print("[ {} ] {}".format(str(op.type), str(OpType._VALUES_TO_NAMES[op.type])))
+#=========================================================================================================================================#
+            if op.type == 5:
+                print ("AUTO ADD MESSAGE CLIENT")
+                if settings["autoAdd"] == True: 
+                    client.findAndAddContactsByMid(op.param1)
+                    xname = client.getContact(op.param1).displayName
+                    client.sendMessage(op.param1, xname + " ,тнαикѕ fσя α∂∂є∂ мє")
+                    
+ #           if op.type == 5:
+  #              print ("AUTO ADD MESSAGE CLIENT2")
+   #             if settings["autoAdd"] == True: 
+    #                client2.findAndAddContactsByMid(op.param1)
+     #               xname = client2.getContact(op.param1).displayName
+      #              client2.sendMessage(op.param1, xname + " ,тнαикѕ fσя α∂∂є∂ мє")
+                    
+            if op.type == 13:
+                print ("[NOTIFIED_INVITE_INTO_GROUP] CLIENT")
+                if clientMID in op.param3:
+                    G = client.getGroup(op.param1)
+                    if settings["autoJoin"] == True:
+                        client.acceptGroupInvitation(op.param1)
+                    else:
+                        pass
+                    
+#            if op.type == 13:
+#                print ("[NOTIFIED_INVITE_INTO_GROUP] CLIENT2")
+#                if clientMID in op.param3:
+#                    G = client2.getGroup(op.param1)
+#                    if settings["autoJoin"] == True:
+#                        client2.acceptGroupInvitation(op.param1)
+#                    else:
+#                        pass
+#            if op.type == 26:
+#                msg = op.message
+#                if msg.text != None:
+#                    if msg.toType == 2:
+#                        may = client.getProfile().mid
+#                        if may in str(msg.contentMetadata) and 'MENTION' in str(msg.contentMetadata):
+#                            pilih = ['「αυтσ яєѕρσиѕє тαg」\n¢αи ι нєℓρ уσυ?']
+#                            rslt = random.choice(pilih)
+#                            client.sendText(msg.to, str(rslt))
+#                        else:
+#                            pass
+#                    else:
+#                        pass
+#                else:
+#                    pass
+#
+#            if op.type == 17:
+#                ginfo = client.getGroup(op.param1)
+#                contact = client.getContact(op.param2)
+                #image = "http://dl.profile.line-cdn.net/" + contact.pictureStatus
+                #client.sendImageWithURL(op.param1,image)
+#                client.sendText(op.param1, client.getContact(op.param2).displayName +"\nωєℓ¢σмє тσ"+"\n>>"+ str(ginfo.name) +"<<")
+            if op.type == 25:
+                msg = op.message
+                text = msg.text
+                msg_id = msg.id
+                receiver = msg.to
+                sender = msg._from
+                try:
+                    if msg.contentType == 0:
+                        if msg.toType == 2:
+                            client.sendChatChecked(receiver, msg_id)
+                            contact = client.getContact(sender)
+                            if text.lower() == 'mention me':
+                                client.sendMessage(receiver, None, contentMetadata={'mid': sender}, contentType=13)
+                                client.sendText(receiver, '「αυтσ яєѕρσиѕє тαg」')
+                                client.tag(receiver, sender)
+                                print ("[COMMAND] MENTION ME")
+                            elif text.lower() == 'mid':
+                                client.sendMessage(msg.to,"「мι∂」\n" +  clientMID)
+                                print ("[COMMAND] MID")
+                            elif text.lower() == 'myname':
+                                me = client.getContact(clientMID)
+                                client.sendMessage(msg.to,"「∂ιѕρℓαуиαмє」\n" + me.displayName)
+                                print ("[COMMAND] DISPLAY NAME")
+                            elif text.lower() == 'mybio':
+                                me = client.getContact(clientMID)
+                                client.sendMessage(msg.to,"「ѕтαтυѕ」\n" + me.statusMessage)
+                                print ("[COMMAND] MY BIO")
+                            elif text.lower() == 'mypicture':
+                                me = client.getContact(clientMID)
+                                client.sendImageWithURL(msg.to,"http://dl.profile.line-cdn.net/" + me.pictureStatus)
+                                print ("[COMMAND] MY PICTURE")
+                            elif text.lower() == 'myvideoprofile':
+                                me = client.getContact(clientMID)
+                                client.sendVideoWithURL(msg.to,"http://dl.profile.line-cdn.net/" + me.pictureStatus + "/vp")
+                            elif text.lower() == 'mycover':
+                                me = client.getContact(clientMID)
+                                cover = channel.getProfileCoverURL(clientMID)    
+                                client.sendImageWithURL(msg.to, cover)
+                                print ("[COMMAND] MY COVER")
+                            elif ("Gn " in msg.text):
+                                 X = client.getGroup(msg.to)
+                                 X.name = msg.text.replace("Gn ","")
+                                 client.updateGroup(X)
+                                 print ("[COMMAND] GNAME")
+                            elif ("Unsend " in msg.text):
+                                 k = msg.text.replace("Unsend ","")
+                                 client.unsendMessage(msg_id)
+                            elif "copy" in msg.text.lower():
+                                if 'MENTION' in msg.contentMetadata.keys()!= None:
+                                    names = re.findall(r'@(\w+)', text)
+                                    mention = ast.literal_eval(msg.contentMetadata['MENTION'])
+                                    mentionees = mention['MENTIONEES']
+                                    for mention in mentionees:
+                                        contact = mention["M"]
+                                        break
+                                    try:
+                                        client.cloneContactProfile(contact)
+                                        client.sendMessage(msg.to, "「¢ℓσиє∂ ѕυкѕєѕ」")
+                                    except:
+                                        client.sendMessage(msg.to, "「¢ℓσиє∂ fαιℓє∂」")
+                                        print ("[COMMAND] COPY OK")
+                            elif text.lower() == 'backup':
+                                try:
+                                    clientProfile.displayName = str(myProfile["displayName"])
+                                    clientProfile.statusMessage = str(myProfile["statusMessage"])
+                                    clientProfile.pictureStatus = str(myProfile["pictureStatus"])
+                                    client.updateProfileAttribute(8, clientProfile.pictureStatus)
+                                    client.updateProfile(clientProfile)
+                                    client.sendMessage(msg.to, "「вα¢кυρ му ρяσfιℓє ѕυ¢ѕєѕ」")
+                                except:
+                                    client.sendMessage(msg.to, "「вα¢кυρ му ρяσfιℓє fαιℓє∂」")
+                                    print ("[COMMAND] BACKUP OK")
+                            elif text.lower() == 'announce':
+                                gett = client.getChatRoomAnnouncements(receiver)
+                                for a in gett:
+                                    aa = client.getContact(a.creatorMid).displayName
+                                    bb = a.contents
+                                    cc = bb.link
+                                    textt = bb.text
+                                    client.sendText(receiver, 'Link: ' + str(cc) + '\nText: ' + str(textt) + '\nMaker: ' + str(aa))
+                            elif text.lower() == 'ngentot':
+                                client.unsendMessage(msg_id)
+                            elif text.lower() == 'getsquare':
+                                a = client.getJoinedSquares()
+                                squares = a.squares
+                                members = a.members
+                                authorities = a.authorities
+                                statuses = a.statuses
+                                noteStatuses = a.noteStatuses
+                                txt = str(squares)+'\n\n'+str(members)+'\n\n'+str(authorities)+'\n\n'+str(statuses)+'\n\n'+str(noteStatuses)+'\n\n'
+                                txt2 = ''
+                                for i in range(len(squares)):
+                                    txt2 += str(i+1)+'. '+str(squares[i].invitationURL)+'\n'
+                                client.sendText(receiver, txt2)
+                            elif "checkmid" in msg.text.lower():
+                                separate = msg.text.split(" ")
+                                saya = msg.text.replace(separate[0] + " ","")
+                                client.sendMessage(receiver, None, contentMetadata={'mid': saya}, contentType=13)
+                                
+                            elif text.lower() == 'friendlist':
+                                contactlist = client.getAllContactIds()
+                                kontak = client.getContacts(contactlist)
+                                num=1
+                                msgs="═════════「ℓιѕтfяιєи∂」═════════"
+                                for ids in kontak:
+                                    msgs+="\n[%i] %s" % (num, ids.displayName)
+                                    num=(num+1)
+                                msgs+="\n═════════「ℓιѕтfяιєи∂」═════════\n\nтσтαℓ : %i" % len(kontak)
+                                client.sendMessage(msg.to, msgs)
+                                
+                            elif text.lower() == 'blocklist':
+                                blockedlist = client.getBlockedContactIds()
+                                kontak = client.getContacts(blockedlist)
+                                num=1
+                                msgs="═════════「ℓιѕтвℓσ¢кє∂」═════════"
+                                for ids in kontak:
+                                    msgs+="\n[%i] %s" % (num, ids.displayName)
+                                    num=(num+1)
+                                msgs+="\n═════════「ℓιѕтвℓσ¢кє∂」═════════\n\nтσтαℓ : %i" % len(kontak)
+                                client.sendMessage(msg.to, msgs)
+                            elif 'lc ' in text.lower():
+                                try:
+                                    typel = [1001,1002,1003,1004,1005,1006]
+                                    key = eval(msg.contentMetadata["MENTION"])
+                                    u = key["MENTIONEES"][0]["M"]
+                                    a = client.getContact(u).mid
+                                    s = client.getContact(u).displayName
+                                    hasil = channel.getHomeProfile(mid=a)
+                                    st = hasil['result']['feeds']
+                                    for i in range(len(st)):
+                                        test = st[i]
+                                        result = test['post']['postInfo']['postId']
+                                        channel.like(str(sender), str(result), likeType=random.choice(typel))
+                                        channel.comment(str(sender), str(result), 'αυтσ ℓιкє ву мє')
+                                    client.sendText(receiver, 'αℓяєα∂у ℓιкє '+str(len(st))+' ρσѕт fяσм' + str(s))
+                                except Exception as e:
+                                    client.sendText(receiver, str(e))
+                            elif 'getcontact ' in text.lower():
+                                try:
+                                    key = eval(msg.contentMetadata["MENTION"])
+                                    u = key["MENTIONEES"][0]["M"]
+                                    cname = client.getContact(u).displayName
+                                    cmid = client.getContact(u).mid
+                                    cstatus = client.getContact(u).statusMessage
+                                    cpic = client.getContact(u).picturePath
+                                    #print(str(a))
+                                    client.sendText(receiver, 'иαмє : '+cname+'\nмι∂ : '+cmid+'\nѕтαтυѕ : '+cstatus+'\nρι¢тυяє : http://dl.profile.line.naver.jp'+cpic)
+                                    client.sendMessage(receiver, None, contentMetadata={'mid': cmid}, contentType=13)
+                                    if "videoProfile='{" in str(client.getContact(u)):
+                                        client.sendVideoWithURL(receiver, 'http://dl.profile.line.naver.jp'+cpic+'/vp.small')
+                                    else:
+                                        client.sendImageWithURL(receiver, 'http://dl.profile.line.naver.jp'+cpic)
+                                except Exception as e:
+                                    client.sendText(receiver, str(e))
+                            elif 'sticker:' in msg.text.lower():
+                                try:
+                                    query = msg.text.replace("sticker:", "")
+                                    query = int(query)
+                                    if type(query) == int:
+                                        client.sendImageWithURL(receiver, 'https://stickershop.line-scdn.net/stickershop/v1/product/'+str(query)+'/ANDROID/main.png')
+                                        client.sendText(receiver, 'https://line.me/S/sticker/'+str(query))
+                                    else:
+                                        client.sendText(receiver, 'υѕє α кєу , ∂σ иσт иυмвєя')
+                                except Exception as e:
+                                    client.sendText(receiver, str(e))
+                            elif "yt:" in msg.text.lower():
+                                try:
+                                    query = msg.text.replace("yt:", "")
+                                    query = query.replace(" ", "+")
+                                    x = client.youtube(query)
+                                    client.sendText(receiver, x)
+                                except Exception as e:
+                                    client.sendText(receiver, str(e))
+                            elif "image:" in msg.text.lower():
+                                try:
+                                    query = msg.text.replace("image:", "")
+                                    images = client.image_search(query)
+                                    client.sendImageWithURL(receiver, images)
+                                except Exception as e:
+                                    client.sendText(receiver, str(e))
+
+                            elif 'apakah ' in msg.text.lower():
+                                try:
+                                    txt = ['iya','tidak','bisa jadi']
+                                    isi = random.choice(txt)
+                                    tts = gTTS(text=isi, lang='id', slow=False)
+                                    tts.save('temp2.mp3')
+                                    client.sendAudio(receiver, 'temp2.mp3')
+                                except Exception as e:
+                                    client.sendText(receiver, str(e))
+                            elif "sytr:" in msg.text:
+                                try:
+                                    isi = msg.text.split(":")
+                                    translator = Translator()
+                                    hasil = translator.translate(isi[2], dest=isi[1])
+                                    A = hasil.text
+                                    tts = gTTS(text=A, lang=isi[1], slow=False)
+                                    tts.save('temp3.mp3')
+                                    client.sendAudio(receiver, 'temp3.mp3')
+                                except Exception as e:
+                                    client.sendText(receiver, str(e))
+                            elif "tr:" in msg.text:
+                                try:
+                                    isi = msg.text.split(":")
+                                    translator = Translator()
+                                    hasil = translator.translate(isi[2], dest=isi[1])
+                                    A = hasil.text                               
+                                    client.sendText(receiver, str(A))
+                                except Exception as e:
+                                    client.sendText(receiver, str(e))
+                            elif text.lower() == 'speed':
+                                start = time.time()
+                                client.sendText(receiver, "「¢σℓℓє¢тιиg」")
+                                elapsed_time = time.time() - start
+                                client.sendText(receiver, "「%sѕє¢σи∂ѕ」" % (elapsed_time))
+                            elif text.lower() == 'sp':
+                                start = time.time()
+                                client.sendText(receiver, "「¢σℓℓє¢тιиg」")
+                                elapsed_time = time.time() - start
+                                client.sendText(receiver, "「%sѕє¢σи∂ѕ」" % (elapsed_time))
+                            elif 'spic' in text.lower():
+                                try:
+                                    key = eval(msg.contentMetadata["MENTION"])
+                                    u = key["MENTIONEES"][0]["M"]
+                                    a = client.getContact(u).pictureStatus
+                                    if "videoProfile='{" in str(client.getContact(u)):
+                                        client.sendVideoWithURL(receiver, 'http://dl.profile.line.naver.jp/'+a+'/vp.small')
+                                    else:
+                                        client.sendImageWithURL(receiver, 'http://dl.profile.line.naver.jp/'+a)
+                                except Exception as e:
+                                    client.sendText(receiver, str(e))
+                            elif 'scover' in text.lower():
+                                try:
+                                    key = eval(msg.contentMetadata["MENTION"])
+                                    u = key["MENTIONEES"][0]["M"]
+                                    a = channel.getProfileCoverURL(mid=u)
+                                    client.sendImageWithURL(receiver, a)
+                                except Exception as e:
+                                    client.sendText(receiver, str(e))
+                            elif text.lower() == 'tagall':
+                                group = client.getGroup(receiver)
+                                nama = [contact.mid for contact in group.members]
+                                nm1, nm2, nm3, nm4, nm5, jml = [], [], [], [], [], len(nama)
+                                if jml <= 100:
+                                    client.mention(receiver, nama)
+                                if jml > 100 and jml < 200:
+                                    for i in range(0, 100):
+                                        nm1 += [nama[i]]
+                                    client.mention(receiver, nm1)
+                                    for j in range(101, len(nama)):
+                                        nm2 += [nama[j]]
+                                    client.mention(receiver, nm2)
+                                if jml > 200 and jml < 300:
+                                    for i in range(0, 100):
+                                        nm1 += [nama[i]]
+                                    client.mention(receiver, nm1)
+                                    for j in range(101, 200):
+                                        nm2 += [nama[j]]
+                                    client.mention(receiver, nm2)
+                                    for k in range(201, len(nama)):
+                                        nm3 += [nama[k]]
+                                    client.mention(receiver, nm3)
+                                if jml > 300 and jml < 400:
+                                    for i in range(0, 100):
+                                        nm1 += [nama[i]]
+                                    client.mention(receiver, nm1)
+                                    for j in range(101, 200):
+                                        nm2 += [nama[j]]
+                                    client.mention(receiver, nm2)
+                                    for k in range(201, len(nama)):
+                                        nm3 += [nama[k]]
+                                    client.mention(receiver, nm3)
+                                    for l in range(301, len(nama)):
+                                        nm4 += [nama[l]]
+                                    client.mention(receiver, nm4)
+                                if jml > 400 and jml < 501:
+                                    for i in range(0, 100):
+                                        nm1 += [nama[i]]
+                                    client.mention(receiver, nm1)
+                                    for j in range(101, 200):
+                                        nm2 += [nama[j]]
+                                    client.mention(receiver, nm2)
+                                    for k in range(201, len(nama)):
+                                        nm3 += [nama[k]]
+                                    client.mention(receiver, nm3)
+                                    for l in range(301, len(nama)):
+                                        nm4 += [nama[l]]
+                                    client.mention(receiver, nm4)
+                                    for m in range(401, len(nama)):
+                                        nm5 += [nama[m]]
+                                    client.mention(receiver, nm5)             
+                                client.sendText(receiver, "「тσтαℓ ℓιѕт мємвєя」="+str(jml))
+
+#============================================================#cancel#=========================================================#
+                            elif text.lower() == 'cancel':
+                                if msg.toType == 2:
+                                    X = client.getGroup(msg.to)
+                                    if X.invitee is not None:
+                                        gInviMids = [contact.mid for contact in X.invitee]
+                                        client.cancelGroupInvitation(msg.to, gInviMids)
+                                        client.cancelGroupInvitation(msg.to, gInviMids)
+                                        client.cancelGroupInvitation(msg.to, gInviMids)
+                                        client.cancelGroupInvitation(msg.to, gInviMids)
+                                        client.cancelGroupInvitation(msg.to, gInviMids)
+                                        client.cancelGroupInvitation(msg.to, gInviMids)
+                                        client.cancelGroupInvitation(msg.to, gInviMids)
+                                        client.cancelGroupInvitation(msg.to, gInviMids)
+                                        client.cancelGroupInvitation(msg.to, gInviMids)
+                                        client.cancelGroupInvitation(msg.to, gInviMids)
+                                        client.cancelGroupInvitation(msg.to, gInviMids)
+#==============================================================================================================================#
+                            elif text.lower() == 'gurl':
+                                if msg.toType == 2:
+                                    x = client.getGroup(msg.to)
+                                    if x.preventJoinByTicket == True:
+                                        x.preventJoinByTicket = False
+                                        client.updateGroup(x)
+                                    gurl = client.reissueGroupTicket(msg.to)
+                                    client.sendText(msg.to,"line://ti/g/" + gurl)
+#============================================================#READ#=========================================================#
+                            elif text.lower() == 'readstart':
+                                try:
+                                    del cctv['point'][receiver]
+                                    del cctv['sidermem'][receiver]
+                                    del cctv['cyduk'][receiver]
+                                except:
+                                    pass
+                                cctv['point'][receiver] = msg.id
+                                cctv['sidermem'][receiver] = ""
+                                cctv['cyduk'][receiver]=True
+                            elif text.lower() == 'offread':
+                                if msg.to in cctv['point']:
+                                    cctv['cyduk'][receiver]=False
+                                    client.sendText(receiver, '====тσтαℓ яєα∂ єи∂====\n\n'+cctv['sidermem'][msg.to])
+                                else:
+                                    client.sendText(receiver, "「ѕєт fιяѕт」")
+                            elif text.lower() == 'lurking on':
+                                tz = tz.timezone("Asia/Jakarta")
+                                timeNow = datetime.now(tz=tz)
+                                day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday","Friday", "Saturday"]
+                                hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
+                                bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+                                hr = timeNow.strftime("%A")
+                                bln = timeNow.strftime("%m")
+                                for i in range(len(day)):
+                                    if hr == day[i]: hasil = hari[i]
+                                for k in range(0, len(bulan)):
+                                    if bln == str(k): bln = bulan[k-1]
+                                readTime = hasil + ", " + timeNow.strftime('%d') + " - " + bln + " - " + timeNow.strftime('%Y') + "\nJam : [ " + timeNow.strftime('%H:%M:%S') + " ]"
+                                if msg.to in read['readPoint']:
+                                        try:
+                                            del read['readPoint'][msg.to]
+                                            del read['readMember'][msg.to]
+                                            del read['readTime'][msg.to]
+                                        except:
+                                            pass
+                                        read['readPoint'][msg.to] = msg.id
+                                        read['readMember'][msg.to] = ""
+                                        read['readTime'][msg.to] = datetime.now().strftime('%H:%M:%S')
+                                        read['ROM'][msg.to] = {}
+                                        with open('sider.json', 'w') as fp:
+                                            json.dump(read, fp, sort_keys=True, indent=4)
+                                            client.sendMessage(msg.to,"「ℓυякιиg нαѕ вєєи α¢тινє∂」")
+                                else:
+                                    try:
+                                        del read['readPoint'][msg.to]
+                                        del read['readMember'][msg.to]
+                                        del read['readTime'][msg.to]
+                                    except:
+                                        pass
+                                    read['readPoint'][msg.to] = msg.id
+                                    read['readMember'][msg.to] = ""
+                                    read['readTime'][msg.to] = datetime.now().strftime('%H:%M:%S')
+                                    read['ROM'][msg.to] = {}
+                                    with open('sider.json', 'w') as fp:
+                                        json.dump(read, fp, sort_keys=True, indent=4)
+                                        client.sendMessage(msg.to, "「ѕєт яєα∂ιиg ρσιит」:\n" + readTime)
+                                        
+                            elif text.lower() == 'lurking off':
+                                tz = tz.timezone("Asia/Jakarta")
+                                timeNow = datetime.now(tz=tz)
+                                day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday","Friday", "Saturday"]
+                                hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
+                                bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+                                hr = timeNow.strftime("%A")
+                                bln = timeNow.strftime("%m")
+                                for i in range(len(day)):
+                                    if hr == day[i]: hasil = hari[i]
+                                for k in range(0, len(bulan)):
+                                    if bln == str(k): bln = bulan[k-1]
+                                readTime = hasil + ", " + timeNow.strftime('%d') + " - " + bln + " - " + timeNow.strftime('%Y') + "\nJam : [ " + timeNow.strftime('%H:%M:%S') + " ]"
+                                if msg.to not in read['readPoint']:
+                                    client.sendMessage(msg.to,"「」")
+                                else:
+                                    try:
+                                            del read['readPoint'][msg.to]
+                                            del read['readMember'][msg.to]
+                                            del read['readTime'][msg.to]
+                                    except:
+                                          pass
+                                    client.sendMessage(msg.to, "「∂єℓєтє яєα∂ιиg ρσιит」:\n" + readTime)
+                
+                            elif text.lower() == 'lurking reset':
+                                tz = tz.timezone("Asia/Jakarta")
+                                timeNow = datetime.now(tz=tz)
+                                day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday","Friday", "Saturday"]
+                                hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
+                                bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+                                hr = timeNow.strftime("%A")
+                                bln = timeNow.strftime("%m")
+                                for i in range(len(day)):
+                                    if hr == day[i]: hasil = hari[i]
+                                for k in range(0, len(bulan)):
+                                    if bln == str(k): bln = bulan[k-1]
+                                readTime = hasil + ", " + timeNow.strftime('%d') + " - " + bln + " - " + timeNow.strftime('%Y') + "\nJam : [ " + timeNow.strftime('%H:%M:%S') + " ]"
+                                if msg.to in read["readPoint"]:
+                                    try:
+                                        read["readPoint"][msg.to] = True
+                                        read["readMember"][msg.to] = {}
+                                        read["readTime"][msg.to] = readTime
+                                        read["ROM"][msg.to] = {}
+                                    except:
+                                        pass
+                                    client.sendMessage(msg.to, "「яєѕєт яєα∂ιиg ρσιит」:\n" + readTime)
+                                else:
+                                    client.sendMessage(msg.to, "「ℓυякιиg иσт α¢тινє」")
+                                    
+                            elif text.lower() == 'lurking':
+                                tz = tz.timezone("Asia/Jakarta")
+                                timeNow = datetime.now(tz=tz)
+                                day = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday","Friday", "Saturday"]
+                                hari = ["Minggu", "Senin", "Selasa", "Rabu", "Kamis", "Jumat", "Sabtu"]
+                                bulan = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+                                hr = timeNow.strftime("%A")
+                                bln = timeNow.strftime("%m")
+                                for i in range(len(day)):
+                                    if hr == day[i]: hasil = hari[i]
+                                for k in range(0, len(bulan)):
+                                    if bln == str(k): bln = bulan[k-1]
+                                readTime = hasil + ", " + timeNow.strftime('%d') + " - " + bln + " - " + timeNow.strftime('%Y') + "\nJam : [ " + timeNow.strftime('%H:%M:%S') + " ]"
+                                if receiver in read['readPoint']:
+                                    if read["ROM"][receiver].items() == []:
+                                        client.sendMessage(receiver,"「ℓιѕт яєα∂єя」:\nNone")
+                                    else:
+                                        chiya = []
+                                        for rom in read["ROM"][receiver].items():
+                                            chiya.append(rom[1])
+                                        cmem = client.getContacts(chiya) 
+                                        zx = ""
+                                        zxc = ""
+                                        zx2 = []
+                                        xpesan = 'Lurkers:\n'
+                                    for x in range(len(cmem)):
+                                        xname = str(cmem[x].displayName)
+                                        pesan = ''
+                                        pesan2 = pesan+"@c\n"
+                                        xlen = str(len(zxc)+len(xpesan))
+                                        xlen2 = str(len(zxc)+len(pesan2)+len(xpesan)-1)
+                                        zx = {'S':xlen, 'E':xlen2, 'M':cmem[x].mid}
+                                        zx2.append(zx)
+                                        zxc += pesan2
+                                    text = xpesan+ zxc + "\nLurking time: \n" + readTime
+                                    try:
+                                        client.sendMessage(receiver, text, contentMetadata={'MENTION':str('{"MENTIONEES":'+json.dumps(zx2).replace(' ','')+'}')}, contentType=0)
+                                    except Exception as error:
+                                        print (error)
+                                    pass
+                                else:
+                                    client.sendMessage(receiver,"「ℓυякιиg нαѕ иσт вєєи ѕєт.」")
+#============================================================#READ FINISH#=========================================================#
+#============================================================#RUNTIMESTART#=========================================================#
+                            elif text.lower() == 'runtime':
+                                eltime = time.time() - mulai
+                                van = "「вσт яυииιиg」\n"+waktu(eltime)
+                                client.sendText(receiver, van)
+#============================================================#RUNTIMEFINISHED#=========================================================#
+#============================================================#ULTI STARTR#=========================================================#
+                            elif 'ulti' in text.lower():
+                                   targets = []
+                                   key = eval(msg.contentMetadata["MENTION"])
+                                   key["MENTIONEES"] [0] ["M"]
+                                   for x in key["MENTIONEES"]:
+                                       targets.append(x["M"])
+                                   for target in targets:
+                                       try:
+                                           client.kickoutFromGroup(msg.to,[target])                           
+                                       except:
+                                           client.sendText(msg.to,"Error")
+                                           
+                            elif 'boom' in text.lower():
+                                   targets = []
+                                   key = eval(msg.contentMetadata["MENTION"])
+                                   key["MENTIONEES"] [0] ["M"]
+                                   for x in key["MENTIONEES"]:
+                                       targets.append(x["M"])
+                                   for target in targets:
+                                       try:
+                                           client2.kickoutFromGroup(msg.to,[target])                           
+                                       except:
+                                           client2.sendText(msg.to,"Error")
+#============================================================#ULTI FINISH#=========================================================#
+                            elif 'stag @' in text.lower():
+                                _name = msg.text.replace("Stag @","")
+                                _nametarget = _name.rstrip(' ')
+                                gs = client.getGroup(msg.to)
+                                for g in gs.members:
+                                    if _nametarget == g.displayName:
+                                        xname = g.displayName
+                                        xlen = str(len(xname)+1)
+                                        msg.contentType = 0
+                                        msg.text = "@"+xname+" "
+                                        msg.contentMetadata ={'MENTION':'{"MENTIONEES":[{"S":"0","E":'+json.dumps(xlen)+',"M":'+json.dumps(g.mid)+'}]}','EMTVER':'4'}
+                                        client.sendMessage(msg)
+                                    else:
+                                        pass
+#============================================================#KICKER MAYHEM#=========================================================#
+                            elif text.lower() == 'mayhem':
+                                if msg.toType == 2:
+                                    print ("ok")
+                                    _name = msg.text.replace("mayhem","")
+                                    gs = client.getGroup(receiver)
+                                    gs = client2.getGroup(receiver)
+                                    client.sendText(msg.to,"「мαунєм」\nιѕ ѕтαят ♪")
+                                    targets = []
+                                    for g in gs.members:
+                                        if _name in g.displayName:
+                                            targets.append(g.mid)
+                                    if targets == []:
+                                        client.sendText(msg.to,"Not found.")
+                                    else:
+                                        for target in targets:
+                                            try:
+                                                klist=[client,client2]
+                                                kicker=random.choice(klist)
+                                                kicker.kickoutFromGroup(msg.to,[target])
+                                                print (msg.to,[g.mid])
+                                            except:
+                                                client.sendText(msg.to,"group cleanse")
+#============================================================#KICKER FINISHED#=========================================================#
+#============================================================#HELPSTART#=========================================================#
+                            elif text.lower() == 'help':
+                                client.sendText(receiver, '「ѕєℓf¢σммαи∂」\n\nмєитισи мє\nмι∂\nмуиαмє\nмувισ\nмуρι¢тυяє\nмуνι∂єσρяσfιℓє\nму¢σνєя\n¢σρу @\nвα¢кυρ\nfяιєи∂ℓιѕт\nвℓσ¢кℓιѕт\nℓυякιиg σи\nℓυякιиg σff\nℓυякιиg яєѕєт\nℓυякιиg \ngєтѕqυαяє\nℓ¢ @\ngєт¢σитα¢т @\nѕтι¢кєя:\nут:\nιмαgє:\nѕρєє∂\nѕρι¢ @\nѕ¢σνєя @\nтαgαℓℓ\nяєα∂ѕтαят\nσffяєα∂\nмσ∂є:ѕєℓf\nяєѕтαят\n===тяαиѕℓαтσя===\nѕутя:\nтя:\n================')
+                                print ("[COMMAND] HELP")
+#====================================================#HELP FINISHED========================================================#
+#============================================================#MODE / RESTART#=========================================================#
+                            elif text.lower() == 'mode:self':
+                                mode = 'self'
+                                client.sendText(receiver, '「ρυвℓιк мσ∂є ѕєт тσ σff」')
+                                print ("[COMMAND] MODE")
+
+                            elif text.lower() == 'restart':
+                                client.sendText(receiver, '「вσт нαѕ вєєи яєѕтαятє∂」')
+                                print ("BOT RESTART")
+                                restart_program()
+                except Exception as e:
+                    client.log("[SEND_MESSAGE] ERROR : " + str(e))
+#=======================================================#MODE FINISHED#=============================================================#
+#============================================================#SIDER START#=========================================================#
+            elif op.type == 55:
+                try:
+                    if cctv['cyduk'][op.param1]==True:
+                        if op.param1 in cctv['point']:
+                            Name = client.getContact(op.param2).displayName
+                            if Name in cctv['sidermem'][op.param1]:
+                                pass
+                            else:
+                                cctv['sidermem'][op.param1] += "\n~ " + Name
+                                pref=['「αυтσ ¢нє¢к яєα∂」\nнєℓℓσ уσυ ¢αи ¢нαт']
+                                client.sendText(op.param1, str(random.choice(pref))+' '+Name)
+                                print ("[COMMAND] CCTV")
+                        else:
+                            pass
+                    else:
+                        pass
+                except:
+                    pass
+
+            else:
+                pass
+
+#============================================================#SIDER FINISHED#=========================================================#
+
+#=========================================================================================================================================#
+            # Don't remove this line, if you wan't get error soon!
+            poll.setRevision(op.revision)
+            
+    except Exception as e:
+        client.log("[SINGLE_TRACE] ERROR : " + str(e))
