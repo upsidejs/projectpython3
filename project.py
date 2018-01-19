@@ -86,7 +86,7 @@ backup.pictureStatus = contact.pictureStatus
 #==============================================================================#
 settings = {
     "lang":"JP",
-    "leaveRoom":True,
+    "leaveRoom":False,
     "autoAdd":False,
     "autoJoin":True,
     "sambutan":True,
@@ -94,7 +94,7 @@ settings = {
     "UpdateName":True,
     "cName":"F̳͉̼͉̙͔͈͕̂̉̇e̮̟͈̣̖̰̩̹͈̾ͨ̑͑r̼̯̤̗̲̞̥̈ͭ̃ͨ̆i̞̟̫̺ͭ̒ͭͣa̘̫͈̭͌͛͌̇̇̍n͉̠̙͉̗̺̋̔ͧ̊t̘̟̼̉̈́͐͋͌̊o̜̓̇ͫ̉͊ͨy͉̝͖̻̯ͮ̒̂ͮ͋ͫͨp̱̱̬̻̞̩͎̌ͦ̏",
     "protecteasy":False,
-    "qrpro":True,
+    "qrpro":False,
     "atjointicket":True,
 }
 read = {
